@@ -160,8 +160,10 @@ export async function registerRoutes(app: Express.Application): Promise<Server> 
             username: "admin",
             email: "admin@ctf.local",
             password: hashedPassword,
-            isAdmin: true,
           });
+          
+          // Update user to be admin (since createUser doesn't accept isAdmin)
+          adminUser = await storage.updateUser(adminUser.id, { isAdmin: true }) || adminUser;
         }
 
         const token = jwt.sign(
@@ -278,16 +280,23 @@ export async function registerRoutes(app: Express.Application): Promise<Server> 
         return res.status(404).json({ error: "Challenge not found" });
       }
 
-      // Record flag submission
+      // Get client info for forensics
+      const clientIp = (req.headers['x-forwarded-for'] as string) || req.connection.remoteAddress || 'unknown';
+      const userAgent = req.headers['user-agent'] || 'unknown';
+      
+      const flagCorrect = submittedFlag.trim() === challenge.flag.trim();
+      
+      // Record flag submission with forensics data
       await storage.createFlagSubmission({
         userId: req.user.id,
         challengeId,
         submittedFlag,
+        isCorrect: flagCorrect,
+        ipAddress: clientIp,
+        userAgent: userAgent,
       });
-
-      const isCorrect = submittedFlag.trim() === challenge.flag.trim();
       
-      if (isCorrect) {
+      if (flagCorrect) {
         // Check for first blood
         const isFirstBlood = await storage.checkFirstBlood(challengeId);
         

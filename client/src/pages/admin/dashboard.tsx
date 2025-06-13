@@ -88,27 +88,6 @@ export default function AdminDashboard() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  // Redirect if not admin
-  if (!user?.isAdmin) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-dark-bg">
-        <Card className="glass max-w-md">
-          <CardContent className="p-8 text-center">
-            <i className="fas fa-ban text-4xl text-red-500 mb-4"></i>
-            <h2 className="text-xl font-bold text-gray-400 mb-2">Access Denied</h2>
-            <p className="text-gray-500 mb-4">You don't have admin privileges.</p>
-            <Button asChild className="bg-neon-green text-dark-bg">
-              <a href="/">
-                <i className="fas fa-home mr-2"></i>
-                Go Home
-              </a>
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
   const { data: challenges = [], isLoading: challengesLoading } = useQuery<Challenge[]>({
     queryKey: ["/api/admin/challenges"],
     queryFn: async () => {
