@@ -524,8 +524,14 @@ export async function registerRoutes(app: Express.Application): Promise<Server> 
 
   app.post("/api/admin/categories", authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
     try {
-      // Note: This would need createCategory method in storage interface
-      res.status(501).json({ error: "Category creation not implemented" });
+      const { name, color, icon } = req.body;
+      
+      if (!name || !color || !icon) {
+        return res.status(400).json({ error: "Name, color, and icon are required" });
+      }
+      
+      const category = await storage.createCategory({ name, color, icon });
+      res.status(201).json(category);
     } catch (error) {
       console.error("Create category error:", error);
       res.status(500).json({ error: "Internal server error" });
@@ -534,8 +540,15 @@ export async function registerRoutes(app: Express.Application): Promise<Server> 
 
   app.put("/api/admin/categories/:id", authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
     try {
-      // Note: This would need updateCategory method in storage interface
-      res.status(501).json({ error: "Category update not implemented" });
+      const categoryId = parseInt(req.params.id);
+      const updates = req.body;
+      
+      const category = await storage.updateCategory(categoryId, updates);
+      if (!category) {
+        return res.status(404).json({ error: "Category not found" });
+      }
+      
+      res.json(category);
     } catch (error) {
       console.error("Update category error:", error);
       res.status(500).json({ error: "Internal server error" });
@@ -544,8 +557,14 @@ export async function registerRoutes(app: Express.Application): Promise<Server> 
 
   app.delete("/api/admin/categories/:id", authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
     try {
-      // Note: This would need deleteCategory method in storage interface
-      res.status(501).json({ error: "Category deletion not implemented" });
+      const categoryId = parseInt(req.params.id);
+      const deleted = await storage.deleteCategory(categoryId);
+      
+      if (!deleted) {
+        return res.status(404).json({ error: "Category not found" });
+      }
+      
+      res.json({ message: "Category deleted successfully" });
     } catch (error) {
       console.error("Delete category error:", error);
       res.status(500).json({ error: "Internal server error" });

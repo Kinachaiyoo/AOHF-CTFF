@@ -273,9 +273,59 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(categories).where(eq(categories.isActive, true));
   }
 
+  async createCategory(categoryData: { name: string; color: string; icon: string }): Promise<Category> {
+    const [category] = await db.insert(categories).values({
+      name: categoryData.name,
+      color: categoryData.color,
+      icon: categoryData.icon,
+      isActive: true,
+      createdAt: new Date(),
+    }).returning();
+    return category;
+  }
+
+  async updateCategory(id: number, updates: Partial<Category>): Promise<Category | undefined> {
+    const [category] = await db.update(categories)
+      .set(updates)
+      .where(eq(categories.id, id))
+      .returning();
+    return category;
+  }
+
+  async deleteCategory(id: number): Promise<boolean> {
+    const result = await db.update(categories)
+      .set({ isActive: false })
+      .where(eq(categories.id, id));
+    return result.rowCount > 0;
+  }
+
   // Authors
   async getAllAuthors(): Promise<Author[]> {
     return await db.select().from(authors).where(eq(authors.isActive, true));
+  }
+
+  async createAuthor(authorData: { name: string }): Promise<Author> {
+    const [author] = await db.insert(authors).values({
+      name: authorData.name,
+      isActive: true,
+      createdAt: new Date(),
+    }).returning();
+    return author;
+  }
+
+  async updateAuthor(id: number, updates: Partial<Author>): Promise<Author | undefined> {
+    const [author] = await db.update(authors)
+      .set(updates)
+      .where(eq(authors.id, id))
+      .returning();
+    return author;
+  }
+
+  async deleteAuthor(id: number): Promise<boolean> {
+    const result = await db.update(authors)
+      .set({ isActive: false })
+      .where(eq(authors.id, id));
+    return result.rowCount > 0;
   }
 
   // Leaderboard with advanced analytics

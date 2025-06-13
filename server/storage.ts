@@ -44,9 +44,15 @@ export interface IStorage {
 
   // Categories
   getAllCategories(): Promise<Category[]>;
+  createCategory(category: { name: string; color: string; icon: string }): Promise<Category>;
+  updateCategory(id: number, updates: Partial<Category>): Promise<Category | undefined>;
+  deleteCategory(id: number): Promise<boolean>;
 
   // Authors
   getAllAuthors(): Promise<Author[]>;
+  createAuthor(author: { name: string }): Promise<Author>;
+  updateAuthor(id: number, updates: Partial<Author>): Promise<Author | undefined>;
+  deleteAuthor(id: number): Promise<boolean>;
 
   // Leaderboard
   getLeaderboard(limit?: number): Promise<User[]>;
