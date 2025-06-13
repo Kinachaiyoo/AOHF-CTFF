@@ -41,14 +41,14 @@ export default function Navigation() {
         <div className="hidden md:flex items-center space-x-8">
           {navLinks.map((link) => (
             <Link key={link.href} href={link.href}>
-              <a
-                className={`hover:neon-green transition-colors duration-300 ${
+              <span
+                className={`hover:neon-green transition-colors duration-300 cursor-pointer ${
                   location === link.href ? "neon-green" : "text-gray-300"
                 }`}
               >
                 <i className={`${link.icon} mr-2`}></i>
                 {link.label}
-              </a>
+              </span>
             </Link>
           ))}
         </div>
