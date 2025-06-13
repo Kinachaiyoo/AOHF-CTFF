@@ -1,0 +1,94 @@
+Create a web application on ctf challenge web application in mern stack. Create a backend admin page also. I will give you features of admin page and normal user page. also create a database. 
+Normal user Page Features:
+1. Home page , Rules, Scoreboard, Challenges, Profile customization, all users section
+2. User Registration with css in terminal
+3. Latest Solves
+4. Add user location country from web request header from where requests is comming
+5. when clicking on user, user solved and unsolved challenge should be displayed with solved time. 
+
+
+Admin Page
+1. Manage challenges
+Challenges --> difficulty, points, Attachment, Challenge link instance, Author, Flag Validation, add flag format
+2. Add and remove solves to specific user or all user like remove customizable solves of user towards specific challenge 	Click user > toggle challenge status > update
+3. add admin page login credential as admin:admin. 
+4. admin page should be in diff subdomain like /admin. 
+5. manage different categories of challenge like web, pwn , crypto forensic etc
+6. manage section of ctf chal author name in diff section
+
+Backend Security
+Flag should be submitted between 15 sec after wrong attempt. 
+user login password should be 8 digit long with lowercase uppercase number and a special character
+duplicate username duplicate email should bot allowed
+
+CSS
+only login and registration page should be in theme of terminal other section should be in normal theme but best
+in scoreboard, top 10 users should be plotted in graph. 
+css should be hacker theme with dark colored. 
+attractive , not so bright for eye pain.
+using gradient , use attractive proper font 
+use advanced js functionalites for the css development
+use 3d designs in homepage but simple
+
+at last optimized this all features to make this professional in new sections and navbars.
+
+Homepage: Use 3D animated CTF logo (Three.js), dynamic challenge board highlights
+rules: Animated code-styled bullet lists
+Scoreboard : Graph of top 10 users	Use Chart.js with dynamic line graph and profile avatars
+Challenges : Challenges	Filterable by category, sorted by solve count	Animated challenge cards (flip on click to show details)
+profile: Profile Customization	Avatar, location auto-fill, bio	Location from req.headers['x-forwarded-for'] → IP → Country (GeoIP)
+All Users	Click on any user to see challenge stats	Modal popup with solved/unsolved challenges + solved time with moment.js
+
+Latest Solves
+Timeline layout (left-right alternating entries)
+Include challenge name, timestamp, and user who solved
+FOr first blood generate an 3D animation and display it to all the online users
+
+Scoreboard Graph
+Chart.js bar graph of top 10 users
+
+Neon glowing bars with animated rising effect
+
+Button toggle to switch between Top 10, Last 24h, Country Leaderboard
+
+Admin
+Manage Challenges	CRUD operations on challenges	React Admin Dashboard (@mui/x-data-grid), color-coded difficulty
+Login (admin:admin)	Subdomain /admin only	Secure route using JWT & role validation
+Challenge Categories	Web, Crypto, Pwn, etc.	Tabs or colored tags for categories
+Authors Management	Add/remove/assign challenge authors	Author carousel with image and bio
+Live Stats	Total solves per challenge, unsolved stats	Heatmap chart with filters
+Flag Format Management	Support format: CTF{} etc.	Auto-validate input before saving
+
+Smart Hints System
+Hints unlocked based on:
+Time spent on challenge
+Number of wrong submissions
+Integrate "hint cost" in points (e.g., -10 points if used).
+
+Flag Submission Analytics
+After solving a challenge:
+Show how many people solved it before you.
+Solve streak.
+Average solve time compared to yours.
+Mini achievement banner for fast solvers (like “Top 5% fastest!”).
+
+Mind Map Profile View
+Instead of a boring list, show each user’s progress as a mind map:
+Central node = user.
+Spokes = solved categories.
+Branches = solved challenges.
+
+Smart Rate Limiting
+Progressive delay system:
+1st wrong attempt: 5 sec
+2nd wrong: 10 sec
+3rd+ = 15+ sec
+Apply per user/IP using Redis or in-memory limiter.
+
+Submission Forensics
+Admin can view:
+Wrong flags submitted
+Time gaps between attempts
+IP logs
+Browser/OS fingerprint
+
