@@ -1,9 +1,11 @@
 import { 
-  users, challenges, solves, flagSubmissions, rateLimits, categories, authors,
+  users, challenges, solves, flagSubmissions, rateLimits, categories, authors, achievements, hintUsage, sessions,
   type User, type InsertUser, type Challenge, type InsertChallenge, 
   type Solve, type InsertSolve, type FlagSubmission, type InsertFlagSubmission,
   type RateLimit, type Category, type Author
 } from "@shared/schema";
+import { eq, desc, sql, and, count, avg, or, gte, lte } from "drizzle-orm";
+import { db } from "./db";
 
 export interface IStorage {
   // Users
@@ -363,4 +365,6 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+import { DatabaseStorage } from "./database-storage";
+
+export const storage = new DatabaseStorage();

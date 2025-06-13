@@ -148,6 +148,33 @@ export async function registerRoutes(app: Express.Application): Promise<Server> 
     try {
       const { username, password } = adminLoginSchema.parse(req.body);
       
+      // Check for hardcoded admin credentials
+      if (username === "admin" && password === "admin") {
+        // Create or get admin user
+        let adminUser = await storage.getUserByUsername("admin");
+        
+        if (!adminUser) {
+          // Create admin user with hashed password
+          const hashedPassword = await bcrypt.hash("admin", 10);
+          adminUser = await storage.createUser({
+            username: "admin",
+            email: "admin@ctf.local",
+            password: hashedPassword,
+            isAdmin: true,
+          });
+        }
+
+        const token = jwt.sign(
+          { id: adminUser.id, username: adminUser.username, isAdmin: adminUser.isAdmin },
+          JWT_SECRET,
+          { expiresIn: '7d' }
+        );
+
+        const { password: _, ...userWithoutPassword } = adminUser;
+        return res.json({ user: userWithoutPassword, token });
+      }
+      
+      // Fallback to database user lookup
       const user = await storage.getUserByUsername(username);
       if (!user || !user.isAdmin) {
         return res.status(401).json({ error: "Invalid admin credentials" });
