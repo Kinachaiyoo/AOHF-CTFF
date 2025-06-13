@@ -115,14 +115,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const adminLogin = async (username: string, password: string) => {
-    const response = await apiRequest("POST", "/api/admin/login", {
-      username,
-      password,
+    const response = await fetch("/api/admin/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
     });
+    
+    if (!response.ok) {
+      throw new Error("Admin login failed");
+    }
     
     const data = await response.json();
     setToken(data.token);
     setUser(data.user);
+    localStorage.setItem("ctf_token", data.token);
   };
 
   const logout = () => {
