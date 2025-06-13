@@ -36,33 +36,16 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: ReactNode }): JSX.Element {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load token from localStorage on mount
-  useEffect(() => {
-    const savedToken = localStorage.getItem("ctf_token");
-    if (savedToken) {
-      setToken(savedToken);
-      refreshUser().finally(() => setIsLoading(false));
-    } else {
-      setIsLoading(false);
-    }
-  }, []);
-
-  // Update axios defaults when token changes
-  useEffect(() => {
-    if (token) {
-      localStorage.setItem("ctf_token", token);
-    } else {
-      localStorage.removeItem("ctf_token");
-    }
-  }, [token]);
-
   const refreshUser = async () => {
-    if (!token) return;
+    if (!token) {
+      setIsLoading(false);
+      return;
+    }
     
     try {
       const response = await fetch("/api/me", {
@@ -76,7 +59,6 @@ export function AuthProvider({ children }: { children: ReactNode }): JSX.Element
         const userData = await response.json();
         setUser(userData);
       } else {
-        // Token is invalid
         setToken(null);
         setUser(null);
       }
@@ -84,8 +66,28 @@ export function AuthProvider({ children }: { children: ReactNode }): JSX.Element
       console.error("Failed to refresh user:", error);
       setToken(null);
       setUser(null);
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    const savedToken = localStorage.getItem("ctf_token");
+    if (savedToken) {
+      setToken(savedToken);
+      refreshUser();
+    } else {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      localStorage.setItem("ctf_token", token);
+    } else {
+      localStorage.removeItem("ctf_token");
+    }
+  }, [token]);
 
   const login = async (username: string, password: string) => {
     const response = await apiRequest("POST", "/api/login", {
@@ -128,19 +130,19 @@ export function AuthProvider({ children }: { children: ReactNode }): JSX.Element
     setUser(null);
   };
 
+  const contextValue = {
+    user,
+    token,
+    login,
+    register,
+    adminLogin,
+    logout,
+    refreshUser,
+    isLoading,
+  };
+
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        token,
-        login,
-        register,
-        adminLogin,
-        logout,
-        refreshUser,
-        isLoading,
-      }}
-    >
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );
@@ -155,21 +157,17 @@ export function useAuth() {
 }
 
 export function useRequireAuth() {
-  const auth = useAuth();
-  
-  if (!auth.user && !auth.isLoading) {
+  const { user } = useAuth();
+  if (!user) {
     throw new Error("Authentication required");
   }
-  
-  return auth;
+  return user;
 }
 
 export function useRequireAdmin() {
-  const auth = useAuth();
-  
-  if (!auth.user?.isAdmin && !auth.isLoading) {
+  const { user } = useAuth();
+  if (!user || !user.isAdmin) {
     throw new Error("Admin access required");
   }
-  
-  return auth;
+  return user;
 }

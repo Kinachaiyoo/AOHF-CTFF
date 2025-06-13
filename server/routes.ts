@@ -268,7 +268,6 @@ export async function registerRoutes(app: Express.Application): Promise<Server> 
         await storage.createSolve({
           userId: req.user.id,
           challengeId,
-          isFirstBlood,
         });
 
         res.json({ 

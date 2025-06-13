@@ -171,8 +171,19 @@ export class MemStorage implements IStorage {
   async createChallenge(insertChallenge: InsertChallenge): Promise<Challenge> {
     const id = this.currentChallengeId++;
     const challenge: Challenge = { 
-      ...insertChallenge, 
-      id, 
+      id,
+      title: insertChallenge.title,
+      points: insertChallenge.points,
+      description: insertChallenge.description,
+      category: insertChallenge.category,
+      difficulty: insertChallenge.difficulty,
+      flag: insertChallenge.flag,
+      flagFormat: insertChallenge.flagFormat || "flag{...}",
+      author: insertChallenge.author,
+      attachmentUrl: insertChallenge.attachmentUrl || null,
+      instanceUrl: insertChallenge.instanceUrl || null,
+      hints: insertChallenge.hints || null,
+      isActive: insertChallenge.isActive ?? true,
       createdAt: new Date() 
     };
     this.challenges.set(id, challenge);
