@@ -1,0 +1,86 @@
+[plugin:runtime-error-plugin] Admin access required
+/home/runner/workspace/client/src/hooks/use-auth.tsx:170:11
+168| const { user } = useAuth();
+169| if (!user || !user.isAdmin) {
+170| throw new Error("Admin access required");
+| ^
+171| }
+172| return user;
+at useRequireAdmin /home/runner/workspace/client/src/hooks/use-auth.tsx:170:11
+at AdminDashboard /home/runner/workspace/client/src/pages/admin/dashboard.tsx:92:3
+Click outside, press Esc key, or fix the code to dismiss.
+You can also disable this overlay by setting server.hmr.overlay to false in vite.config.js.
+
+failed to create category error.
+old challenge is not in admin page.
+no users are rhere in admin page
+in add author, add only author nma enot details
+in add category feature, remove features of category description
+I can see the issues. The admin authentication is failing because the token isn't being properly stored and sent with requests. Let me fix the authentication flow and simplify the admin features as requested.
+
+
+Opened client/src/hooks/use-auth.tsx
+I'll fix the authentication issue and simplify the admin features as requested.
+
+
+Edited client/src/hooks/use-auth.tsx
+I'll fix the authentication token issue and simplify the admin components as requested.
+
+I'm fixing the authentication and token storage issues that are preventing the admin panel from working properly.
+
+
+Opened client/src/lib/queryClient.ts
+
+Restarted Start application
+
+Took a screenshot
+Checkpoint made
+3 minutes ago
+•
+Improve the admin login process and ensure login reliability
+Screenshot
+Load preview
+I need to fix the authentication system to use JWT tokens properly and simplify the admin components as requested. Let me update the API request function to include authorization headers.
+
+
+Edited client/src/lib/queryClient.ts
+I'll simplify the admin components as requested and fix the authentication issues.
+
+
+Edited client/src/components/admin/category-management.tsx
+
+Edited client/src/components/admin/category-management.tsx
+I'll fix the category management component to remove description fields and simplify the author form as requested.
+
+
+Edited client/src/components/admin/category-management.tsx
+I'll remove all description-related code from the category management and simplify the author form to only include name.
+
+
+Edited client/src/components/admin/category-management.tsx
+I'll remove all description references and simplify the admin components to fix the errors.
+
+I'll fix all the remaining TypeScript errors and simplify the admin components to get them working properly.
+
+
+Edited client/src/components/admin/category-management.tsx
+
+Edited client/src/components/admin/category-management.tsx
+I'll simplify the author form to only include name and fix the remaining authentication issues to get the admin panel working properly.
+
+
+Edited client/src/components/admin/author-management.tsx
+
+Restarted Start application
+
+Took a screenshot
+Checkpoint made
+2 minutes ago
+•
+Improve admin interface by simplifying author and category creation
+Screenshot
+Load preview
+I'm fixing the authentication token issues and simplifying the admin forms as requested. The server restarted, so I'll now complete the fixes.
+
+
+Edited client/src/components/admin/author-management.tsx

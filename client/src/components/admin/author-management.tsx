@@ -5,10 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -24,12 +24,6 @@ type AuthorFormData = z.infer<typeof authorSchema>;
 interface Author {
   id: number;
   name: string;
-  email: string;
-  bio?: string;
-  website?: string;
-  twitter?: string;
-  github?: string;
-  avatar?: string;
   challengeCount?: number;
   createdAt: string;
 }
@@ -41,12 +35,6 @@ function AuthorForm({ author, onClose }: { author?: Author; onClose: () => void 
     resolver: zodResolver(authorSchema),
     defaultValues: author ? {
       name: author.name,
-      email: author.email,
-      bio: author.bio || "",
-      website: author.website || "",
-      twitter: author.twitter || "",
-      github: author.github || "",
-      avatar: author.avatar || "",
     } : {}
   });
 

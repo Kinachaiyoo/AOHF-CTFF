@@ -42,7 +42,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   const refreshUser = async () => {
-    if (!token) {
+    const savedToken = localStorage.getItem("ctf_token");
+    if (!savedToken) {
       setIsLoading(false);
       return;
     }
@@ -50,7 +51,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await fetch("/api/me", {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${savedToken}`,
         },
         credentials: "include",
       });
@@ -58,12 +59,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (response.ok) {
         const userData = await response.json();
         setUser(userData);
+        setToken(savedToken);
       } else {
+        localStorage.removeItem("ctf_token");
         setToken(null);
         setUser(null);
       }
     } catch (error) {
       console.error("Failed to refresh user:", error);
+      localStorage.removeItem("ctf_token");
       setToken(null);
       setUser(null);
     } finally {
@@ -72,13 +76,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    const savedToken = localStorage.getItem("ctf_token");
-    if (savedToken) {
-      setToken(savedToken);
-      refreshUser();
-    } else {
-      setIsLoading(false);
-    }
+    refreshUser();
   }, []);
 
   useEffect(() => {
@@ -173,7 +171,10 @@ export function useRequireAuth() {
 }
 
 export function useRequireAdmin() {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
+  if (isLoading) {
+    return null;
+  }
   if (!user || !user.isAdmin) {
     throw new Error("Admin access required");
   }
