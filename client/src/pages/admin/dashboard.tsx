@@ -25,7 +25,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest, getAuthHeaders } from "@/lib/queryClient";
+import { apiRequest } from "@/lib/queryClient";
+import { getAuthHeaders } from "@/lib/auth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -111,8 +112,14 @@ export default function AdminDashboard() {
   const { data: challenges = [], isLoading: challengesLoading } = useQuery<Challenge[]>({
     queryKey: ["/api/admin/challenges"],
     queryFn: async () => {
+      const headers = getAuthHeaders();
       const response = await fetch("/api/admin/challenges", {
-        headers: getAuthHeaders(),
+        headers: Object.keys(headers).length > 0 ? {
+          ...headers,
+          "Content-Type": "application/json",
+        } : {
+          "Content-Type": "application/json",
+        },
       });
       if (!response.ok) throw new Error("Failed to fetch challenges");
       return response.json();
@@ -123,7 +130,7 @@ export default function AdminDashboard() {
     queryKey: ["/api/users"],
   });
 
-  const { data: categories = [] } = useQuery({
+  const { data: categories = [] } = useQuery<any[]>({
     queryKey: ["/api/categories"],
   });
 
@@ -673,7 +680,7 @@ export default function AdminDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {categories.map((category: any) => {
+                  {(categories as any[]).map((category: any) => {
                     const count = challenges.filter(c => c.category === category.name).length;
                     const percentage = challenges.length > 0 ? Math.round((count / challenges.length) * 100) : 0;
                     

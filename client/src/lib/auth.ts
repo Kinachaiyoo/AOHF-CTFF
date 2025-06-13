@@ -1,6 +1,6 @@
 import { useAuth } from "@/hooks/use-auth";
 
-export function getAuthHeaders() {
+export function getAuthHeaders(): Record<string, string> {
   const token = localStorage.getItem("ctf_token");
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
