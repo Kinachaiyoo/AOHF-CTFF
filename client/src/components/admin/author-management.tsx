@@ -17,12 +17,6 @@ import { useToast } from "@/hooks/use-toast";
 
 const authorSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  email: z.string().email("Valid email is required"),
-  bio: z.string().optional(),
-  website: z.string().url().optional().or(z.literal("")),
-  twitter: z.string().optional(),
-  github: z.string().optional(),
-  avatar: z.string().url().optional().or(z.literal("")),
 });
 
 type AuthorFormData = z.infer<typeof authorSchema>;

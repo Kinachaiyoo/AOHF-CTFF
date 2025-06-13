@@ -16,7 +16,6 @@ import { useToast } from "@/hooks/use-toast";
 
 const categorySchema = z.object({
   name: z.string().min(1, "Name is required"),
-  description: z.string().min(1, "Description is required"),
   color: z.string().regex(/^#[0-9A-F]{6}$/i, "Must be a valid hex color"),
   icon: z.string().min(1, "Icon is required"),
 });
@@ -26,7 +25,6 @@ type CategoryFormData = z.infer<typeof categorySchema>;
 interface Category {
   id: number;
   name: string;
-  description: string;
   color: string;
   icon: string;
   challengeCount?: number;
@@ -40,7 +38,6 @@ function CategoryForm({ category, onClose }: { category?: Category; onClose: () 
     resolver: zodResolver(categorySchema),
     defaultValues: category ? {
       name: category.name,
-      description: category.description,
       color: category.color,
       icon: category.icon,
     } : {
@@ -140,16 +137,7 @@ function CategoryForm({ category, onClose }: { category?: Category; onClose: () 
         </div>
       </div>
 
-      <div>
-        <Label htmlFor="description">Description</Label>
-        <Textarea
-          id="description"
-          {...register("description")}
-          placeholder="Category description"
-          className="glass border-neon-cyan/30"
-        />
-        {errors.description && <p className="text-red-400 text-sm mt-1">{errors.description.message}</p>}
-      </div>
+
 
       <div>
         <Label htmlFor="color">Color (Hex)</Label>
@@ -282,7 +270,6 @@ export default function CategoryManagement() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Name</TableHead>
-                  <TableHead>Description</TableHead>
                   <TableHead>Icon</TableHead>
                   <TableHead>Color</TableHead>
                   <TableHead>Challenges</TableHead>
@@ -298,7 +285,7 @@ export default function CategoryManagement() {
                         {category.name}
                       </Badge>
                     </TableCell>
-                    <TableCell>{category.description}</TableCell>
+
                     <TableCell>
                       <i className={category.icon} style={{ color: category.color }}></i>
                       <span className="ml-2 text-sm text-gray-400">{category.icon}</span>
