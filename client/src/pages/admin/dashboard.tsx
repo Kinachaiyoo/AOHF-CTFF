@@ -89,12 +89,8 @@ function AdminOverview() {
 }
 
 export default function AdminDashboard() {
-  const { user } = useRequireAdmin();
+  useRequireAdmin();
   const [location] = useLocation();
-
-  if (!user) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div className="min-h-screen bg-dark-bg pt-20">

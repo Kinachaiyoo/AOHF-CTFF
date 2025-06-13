@@ -426,6 +426,173 @@ export async function registerRoutes(app: Express.Application): Promise<Server> 
     }
   });
 
+  // Admin user management routes
+  app.get("/api/admin/users", authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+    try {
+      const users = await storage.getAllUsers();
+      const usersWithSolves = await Promise.all(users.map(async (user) => {
+        const solves = await storage.getUserSolves(user.id);
+        const { password, ...userWithoutPassword } = user;
+        return {
+          ...userWithoutPassword,
+          solves
+        };
+      }));
+      res.json(usersWithSolves);
+    } catch (error) {
+      console.error("Get admin users error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.patch("/api/admin/users/:id", authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const updates = req.body;
+      
+      const user = await storage.updateUser(userId, updates);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      
+      const { password, ...userWithoutPassword } = user;
+      res.json(userWithoutPassword);
+    } catch (error) {
+      console.error("Update user error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.delete("/api/admin/users/:id", authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+    try {
+      const userId = parseInt(req.params.id);
+      // Note: This would need to be implemented in storage interface
+      res.status(501).json({ error: "User deletion not implemented" });
+    } catch (error) {
+      console.error("Delete user error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  // Admin user solve management
+  app.post("/api/admin/users/:userId/solves", authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const { challengeId } = req.body;
+      
+      // Check if solve already exists
+      const existingSolve = await storage.getSolve(userId, challengeId);
+      if (existingSolve) {
+        return res.status(400).json({ error: "Solve already exists" });
+      }
+      
+      const solve = await storage.createSolve({
+        userId,
+        challengeId,
+      });
+      
+      res.status(201).json(solve);
+    } catch (error) {
+      console.error("Add solve error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.delete("/api/admin/users/:userId/solves/:challengeId", authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const challengeId = parseInt(req.params.challengeId);
+      
+      // Note: This would need a deleteSolve method in storage interface
+      res.status(501).json({ error: "Solve deletion not implemented" });
+    } catch (error) {
+      console.error("Remove solve error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  // Admin category management routes
+  app.get("/api/admin/categories", authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+    try {
+      const categories = await storage.getAllCategories();
+      res.json(categories);
+    } catch (error) {
+      console.error("Get admin categories error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.post("/api/admin/categories", authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+    try {
+      // Note: This would need createCategory method in storage interface
+      res.status(501).json({ error: "Category creation not implemented" });
+    } catch (error) {
+      console.error("Create category error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.put("/api/admin/categories/:id", authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+    try {
+      // Note: This would need updateCategory method in storage interface
+      res.status(501).json({ error: "Category update not implemented" });
+    } catch (error) {
+      console.error("Update category error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.delete("/api/admin/categories/:id", authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+    try {
+      // Note: This would need deleteCategory method in storage interface
+      res.status(501).json({ error: "Category deletion not implemented" });
+    } catch (error) {
+      console.error("Delete category error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  // Admin author management routes
+  app.get("/api/admin/authors", authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+    try {
+      const authors = await storage.getAllAuthors();
+      res.json(authors);
+    } catch (error) {
+      console.error("Get admin authors error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.post("/api/admin/authors", authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+    try {
+      // Note: This would need createAuthor method in storage interface
+      res.status(501).json({ error: "Author creation not implemented" });
+    } catch (error) {
+      console.error("Create author error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.put("/api/admin/authors/:id", authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+    try {
+      // Note: This would need updateAuthor method in storage interface
+      res.status(501).json({ error: "Author update not implemented" });
+    } catch (error) {
+      console.error("Update author error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.delete("/api/admin/authors/:id", authenticateToken, requireAdmin, async (req: AuthRequest, res: Response) => {
+    try {
+      // Note: This would need deleteAuthor method in storage interface
+      res.status(501).json({ error: "Author deletion not implemented" });
+    } catch (error) {
+      console.error("Delete author error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
   const httpServer = app.listen(5000, "0.0.0.0", () => {
     console.log("Server running on port 5000");
   });
