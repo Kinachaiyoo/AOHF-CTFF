@@ -182,7 +182,7 @@ export class MemStorage implements IStorage {
       author: insertChallenge.author,
       attachmentUrl: insertChallenge.attachmentUrl || null,
       instanceUrl: insertChallenge.instanceUrl || null,
-      hints: insertChallenge.hints || null,
+      hints: null,
       isActive: insertChallenge.isActive ?? true,
       createdAt: new Date() 
     };
@@ -317,7 +317,7 @@ export class MemStorage implements IStorage {
       challengeId,
       attempts,
       lastAttempt: new Date(),
-      nextAllowedAt,
+      nextAllowedAt: nextAllowedAt || null,
     };
     
     this.rateLimits.set(`${userId}-${challengeId}`, rateLimit);
