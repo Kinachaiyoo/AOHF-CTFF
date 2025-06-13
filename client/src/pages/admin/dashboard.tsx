@@ -373,7 +373,7 @@ export default function AdminDashboard() {
                                     <SelectValue />
                                   </SelectTrigger>
                                   <SelectContent className="glass">
-                                    {categories.map((cat: any) => (
+                                    {(categories as any[]).map((cat: any) => (
                                       <SelectItem key={cat.id} value={cat.name}>
                                         {cat.name}
                                       </SelectItem>
